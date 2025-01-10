@@ -9,8 +9,8 @@ import { times } from '../data/times-entity';
   providedIn: 'root'
 })
 export class TimeServiceService {
-  // urlApi = "https://ejercicio-10-backend.onrender.com/api/v1/heroes"
-  urlApi = "http://localhost:8080/api/v1/time-tracking"
+  urlApi = "https://backend-proyecto-final-1rr3.onrender.com/api/v1/time-tracking"
+  // urlApi = "http://localhost:8080/api/v1/time-tracking"
 
   // Inyectamos el cliente http para conectarnos
   constructor( private httpClient: HttpClient) { }

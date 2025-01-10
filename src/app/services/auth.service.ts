@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  urlApi = "http://localhost:8080/api/v1/auth";
+  urlApi = "https://backend-proyecto-final-1rr3.onrender.com/api/v1/auth";
 
   constructor(private httpClient: HttpClient, private router: Router) { }  // Inyección de HttpClient
 
