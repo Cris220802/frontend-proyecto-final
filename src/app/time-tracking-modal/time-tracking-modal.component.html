@@ -1,0 +1,35 @@
+<div class="modal fade" id="timeTrackingModal" tabindex="-1" aria-labelledby="timeTrackingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="timeTrackingModalLabel">{{ modalTitle }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Crear/Editar Formulario -->
+          <form *ngIf="action !== 'delete'" [formGroup]="timeTrackingForm">
+            <div class="mb-3">
+              <label for="checkInTime" class="form-label">Hora de Entrada</label>
+              <input type="datetime-local" id="checkInTime" class="form-control" formControlName="checkInTime" />
+            </div>
+            <div class="mb-3">
+              <label for="checkOutTime" class="form-label">Hora de Salida</label>
+              <input type="datetime-local" id="checkOutTime" class="form-control" formControlName="checkOutTime" />
+            </div>
+          </form>
+  
+          <!-- Confirmar Eliminación -->
+          <p *ngIf="action === 'delete'">
+            ¿Estás seguro de que deseas eliminar este registro de TimeTracking?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button *ngIf="action === 'create'" type="button" class="btn btn-primary" (click)="create()">Crear</button>
+          <button *ngIf="action === 'edit'" type="button" class="btn btn-primary" (click)="edit()">Guardar Cambios</button>
+          <button *ngIf="action === 'delete'" type="button" class="btn btn-danger" (click)="delete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
