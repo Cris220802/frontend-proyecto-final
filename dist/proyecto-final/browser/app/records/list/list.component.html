@@ -1,0 +1,207 @@
+<div class="container-fluid p-0">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-lg">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">
+        <i class="bi bi-clock-history me-2"></i>Time Tracker
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" routerLink="/records" routerLinkActive="active">Time Tracking</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/creditos" routerLinkActive="active">Créditos</a>
+          </li>
+        </ul>
+        <div class="d-flex" role="search">
+          <p class="text-white mt-3 me-4">¡Bienvenido <span class="fw-bolder">{{user}}</span>!</p>
+          <button class="btn btn-outline-light mt-2 mb-2" type="button" (click)="logout()">Salir</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+          <div class="card-body text-center p-4">
+            <div class="row">
+              <div class="col-8">
+                <h2 class="text-center mb-4">Registros de Time Tracking</h2>
+              </div>
+              <div class="col-4">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createModal">Agregar
+                  Nuevo</button>
+              </div>
+            </div>
+
+            <table class="table table-striped table-bordered">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Check In Time</th>
+                  <th scope="col">Check Out Time</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let time of listadoTimes; let i = index">
+                  <th scope="row">{{ time.trackingId }}</th>
+                  <td>{{ time.checkInTime }}</td>
+                  <td>{{ time.checkOutTime }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editModal"
+                      (click)="onSelectTime(time)">Editar</button>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                      (click)="onSelectTime(time)">Eliminar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- Create Modal -->
+  <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Crear nuevo TimeTracking</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="timeTrackingForm" [formGroup]="createForm" (ngSubmit)="onSubmitCreate()">
+            <!-- Campo de Hora de Entrada -->
+            <div class="mb-3">
+              <label for="checkInTime" class="form-label">Hora de Entrada</label>
+              <input type="datetime-local" id="checkInTime" class="form-control" required formControlName="checkInTime"
+                [ngClass]="{ 'is-invalid': checkInTime.invalid && checkInTime.touched }">
+              <div *ngIf="checkInTime.invalid && checkInTime.touched" class="invalid-feedback">
+                La hora de entrada es obligatoria.
+              </div>
+            </div>
+            <!-- Campo de Hora de Salida -->
+            <div class="mb-3">
+              <label for="checkOutTime" class="form-label">Hora de Salida</label>
+              <input type="datetime-local" id="checkOutTime" class="form-control" required
+                formControlName="checkOutTime"
+                [ngClass]="{ 'is-invalid': checkOutTime.invalid && checkOutTime.touched }">
+              <div *ngIf="checkOutTime.invalid && checkOutTime.touched" class="invalid-feedback">
+                La hora de salida es obligatoria.
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-success" form="timeTrackingForm">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Editar TimeTracking</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm" [formGroup]="editForm" (ngSubmit)="onSubmitEdit()">
+            <div class="mb-3">
+              <label for="checkInTime" class="form-label">Check In Time</label>
+              <input
+                type="datetime-local"
+                id="checkInTime"
+                class="form-control"
+                formControlName="checkInTimeEdit"
+                [ngClass]="{ 'is-invalid': editForm.get('checkInTimeEdit')?.invalid && editForm.get('checkInTimeEdit')?.touched }"
+              />
+              <div *ngIf="editForm.get('checkInTimeEdit')?.invalid && editForm.get('checkInTimeEdit')?.touched" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          
+            <div class="mb-3">
+              <label for="checkOutTime" class="form-label">Check Out Time</label>
+              <input
+                type="datetime-local"
+                id="checkOutTime"
+                class="form-control"
+                formControlName="checkOutTimeEdit"
+                [ngClass]="{ 'is-invalid': editForm.get('checkOutTimeEdit')?.invalid && editForm.get('checkOutTimeEdit')?.touched }"
+              />
+              <div *ngIf="editForm.get('checkOutTimeEdit')?.invalid && editForm.get('checkOutTimeEdit')?.touched" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </form>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary" form="editForm">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar Time Tracking</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-center fs-6">¿Estás seguro que quieres eliminar este Time Tracking?</p>
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Check In Time</th>
+                <th scope="col">Check Out Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <!-- Mostrar trackingId si existe -->
+                <th scope="row">{{ selectedTime?.trackingId || 'No disponible' }}</th>
+
+                <!-- Mostrar checkInTime si existe -->
+                <td>{{ selectedTime?.checkInTime ? selectedTime.checkInTime : 'No registrado' }}</td>
+
+                <!-- Mostrar checkOutTime si existe -->
+                <td>{{ selectedTime?.checkOutTime ? selectedTime.checkOutTime : 'No registrado' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-danger" (click)="onDelete()" data-bs-dismiss="modal">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<app-spinner></app-spinner>
